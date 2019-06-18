@@ -1,0 +1,62 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  font-size: 60px;
+  margin: 30px;
+}
+
+ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto;
+  width: 300px;
+  padding: 0;
+  border: 5px solid #000;
+}
+
+li {
+  width: 90px;
+  height: 90px;
+  list-style: none;
+  border: 5px solid #000;
+  background-color: gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+}
+
+li:hover {
+  background-color: yellow;
+  cursor: pointer;
+}
+
+.occupied {
+  background-color: #fff;
+  font-size: 42px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.occupied:hover {
+  background-color: #fff;
+}
+
+.winner {
+  color: green;
+}
+
+.loser {
+  background-color: #fff;
+  color: red;
+}
+
+.winner:hover, .loser:hover {
+  background-color: #fff;
+  cursor: auto;
+}
