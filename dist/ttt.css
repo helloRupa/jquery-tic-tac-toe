@@ -60,3 +60,19 @@ li:hover {
   background-color: #fff;
   cursor: auto;
 }
+
+button {
+  font-size: 16px;
+  padding: 5px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
+}
+
+#new-game {
+  display: block;
+  margin: 32px auto;
+  background-color: #435b93;
+  color: #fff;
+}

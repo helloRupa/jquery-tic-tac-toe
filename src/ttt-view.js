@@ -6,6 +6,12 @@ class View {
     this.bindEvents();
   }
 
+  clearBoard() {
+    this.display.off('click');
+    this.display.html('');
+    $('#game-end-text').remove();
+  }
+
   bindEvents() {
     this.display.on('click', 'li', (event) => {
       this.makeMove($(event.currentTarget));
@@ -14,9 +20,9 @@ class View {
         const winner = this.game.winner();
 
         if(winner != null) {
-          $('body').append(`<h1>${winner} wins the round!</h1>`);
+          $('body').append(`<h1 id="game-end-text">${winner} wins the round!</h1>`);
         } else {
-          $('body').append('<h1>Tie! Nobody wins!</h1>');
+          $('body').append('<h1 id="game-end-text">Tie! Nobody wins!</h1>');
         }
 
         this.showEnd(winner);
@@ -59,7 +65,7 @@ class View {
         board.append(li);
       }
     }
-    
+
     this.display.append(board);
   }
 }

@@ -2,6 +2,10 @@ const View = require('./ttt-view');
 const Game = require('./game');
 
   $(() => {
-    const game = new Game();
-    const view = new View(game, $('.ttt'));
+    let view = new View(new Game(), $('.ttt'));
+
+    $('#new-game').on('click', () => {
+      view.clearBoard();
+      view = new View(new Game(), $('.ttt'));
+    });
   });
