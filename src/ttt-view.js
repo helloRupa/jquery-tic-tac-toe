@@ -11,13 +11,14 @@ class View {
       this.makeMove($(event.currentTarget));
 
       if(this.game.isOver()) {
-        let winner = this.game.winner();
+        const winner = this.game.winner();
+
         if(winner != null) {
-          winner = (winner === 'o') ? 'x' : 'o';
           $('body').append(`<h1>${winner} wins the round!</h1>`);
         } else {
           $('body').append('<h1>Tie! Nobody wins!</h1>');
         }
+
         this.showEnd(winner);
         this.display.off('click');
       }
@@ -27,6 +28,7 @@ class View {
   showEnd(winner) {
     $('li').each(function (idx, el) {
       const $el = $(el);
+
       if ($el.text() === winner) {
         $el.addClass('winner');
       } else {
@@ -40,12 +42,12 @@ class View {
 
     try {
       this.game.playMove(pos);
+      $square.text(this.game.currentPlayer);
+      $square.addClass('occupied');
+      this.game.swapTurn();
     } catch(err) {
       alert('That space is taken!');
     }
-
-    $square.text(this.game.currentPlayer);
-    $square.addClass('occupied');
   }
 
   setupBoard() {
@@ -57,6 +59,7 @@ class View {
         board.append(li);
       }
     }
+    
     this.display.append(board);
   }
 }

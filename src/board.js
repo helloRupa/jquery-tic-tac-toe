@@ -2,11 +2,16 @@ const MoveError = require("./moveError");
 
 class Board {
   constructor() {
-    this.grid = Board.makeGrid();
+    this.grid = [
+      [null, null, null],
+      [null, null, null],
+      [null, null, null]
+    ];
   }
 
   isEmptyPos(pos) {
     if (!Board.isValidPos(pos)) {
+      // safety in case someone makes a grid w/ too many squares
       throw new MoveError('Is not valid position!');
     }
 
@@ -14,19 +19,15 @@ class Board {
   }
 
   isOver() {
-    if (this.winner() != null) {
+    if (Boolean(this.winner()) || this.isFull()) {
       return true;
     }
 
-    for (let rowIdx = 0; rowIdx < 3; rowIdx++) {
-      for (let colIdx = 0; colIdx < 3; colIdx++) {
-        if (this.isEmptyPos([rowIdx, colIdx])) {
-          return false;
-        }
-      }
-    }
+    return false;
+  }
 
-    return true;
+  isFull() {
+    return !this.grid.flat().some(el => el == null);
   }
 
   placeMark(pos, mark) {
@@ -37,88 +38,47 @@ class Board {
     this.grid[pos[0]][pos[1]] = mark;
   }
 
-  print() {
-    const strs = [];
-    for (let rowIdx = 0; rowIdx < 3; rowIdx++) {
-      const marks = [];
-      for (let colIdx = 0; colIdx < 3; colIdx++) {
-        marks.push(
-          this.grid[rowIdx][colIdx] ? this.grid[rowIdx][colIdx] : " "
-        );
-      }
-      strs.push(`${marks.join('|')}\n`);
-    }
+  buildDiagonals() {
+    return [
+      [this.grid[0][0], this.grid[1][1], this.grid[2][2]],
+      [this.grid[0][2], this.grid[1][1], this.grid[2][0]]
+    ];
+  }
 
-    console.log(strs.join('-----\n'));
+  buildColumns() {
+    return [
+      [this.grid[0][0], this.grid[1][0], this.grid[2][0]],
+      [this.grid[0][1], this.grid[1][1], this.grid[2][1]],
+      [this.grid[0][2], this.grid[1][2], this.grid[2][2]]
+    ]
+  }
+
+  allLines() {
+    return this.grid.concat(this.buildColumns()).concat(this.buildDiagonals());
   }
 
   winner() {
-    const posSeqs = [
-      // horizontals
-      [[0, 0], [0, 1], [0, 2]],
-      [[1, 0], [1, 1], [1, 2]],
-      [[2, 0], [2, 1], [2, 2]],
-      // verticals
-      [[0, 0], [1, 0], [2, 0]],
-      [[0, 1], [1, 1], [2, 1]],
-      [[0, 2], [1, 2], [2, 2]],
-      // diagonals
-      [[0, 0], [1, 1], [2, 2]],
-      [[2, 0], [1, 1], [0, 2]]
-    ];
+    let winner = null;
 
-    for (let i = 0; i < posSeqs.length; i++) {
-      const winner = this.winnerHelper(posSeqs[i]);
-      if (winner != null) {
-        return winner;
-      }
-    }
+    this.allLines().some(row => {
+      const str = row.join('');
 
-    return null;
-  }
-
-  winnerHelper(posSeq) {
-    for (let markIdx = 0; markIdx < Board.marks.length; markIdx++) {
-      const targetMark = Board.marks[markIdx];
-      let winner = true;
-      for (let posIdx = 0; posIdx < 3; posIdx++) {
-        const pos = posSeq[posIdx];
-        const mark = this.grid[pos[0]][pos[1]];
-
-        if (mark != targetMark) {
-          winner = false;
-        }
+      if (str === 'XXX' || str === 'OOO') {
+        winner = (str === 'XXX') ? 'X' : 'O';
       }
 
-      if (winner) {
-        return targetMark;
-      }
-    }
+      return Boolean(winner);
+    });
 
-    return null;
+    return winner;
   }
 
   static isValidPos(pos) {
-    return (0 <= pos[0]) &&
-    (pos[0] < 3) &&
-    (0 <= pos[1]) &&
-    (pos[1] < 3);
-  }
-
-  static makeGrid() {
-    const grid = [];
-
-    for (let i = 0; i < 3; i++) {
-      grid.push([]);
-      for (let j = 0; j < 3; j++) {
-        grid[i].push(null);
-      }
-    }
-
-    return grid;
+    const range = [0, 1, 2];
+    return range.includes(pos[0]) && range.includes(pos[1]);
   }
 }
 
-Board.marks = ['x', 'o'];
+Board.marks = ['X', 'O'];
 
 module.exports = Board;
