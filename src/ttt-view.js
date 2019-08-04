@@ -1,7 +1,10 @@
+const ComputerPlayer = require('./computerPlayer');
+
 class View {
   constructor(game, $el) {
     this.game = game;
     this.display = $el;
+    this.computerPlayer = new ComputerPlayer('O');
     this.setupBoard();
     this.bindEvents();
   }
@@ -14,21 +17,36 @@ class View {
 
   bindEvents() {
     this.display.on('click', 'li', (event) => {
-      this.makeMove($(event.currentTarget));
+      if (this.game.currentPlayer === 'X') {
+        const didMove = this.makeMove($(event.currentTarget));
 
-      if(this.game.isOver()) {
-        const winner = this.game.winner();
-
-        if(winner != null) {
-          $('body').append(`<h1 id="game-end-text">${winner} wins the round!</h1>`);
-        } else {
-          $('body').append('<h1 id="game-end-text">Tie! Nobody wins!</h1>');
+        if (this.gameOver()) {
+          return;
         }
 
-        this.showEnd(winner);
-        this.display.off('click');
+        if (didMove) {
+          this.moveComputer();
+        }
       }
     });
+  }
+
+  gameOver() {
+    if(this.game.isOver()) {
+      const winner = this.game.winner();
+
+      if(winner != null) {
+        $('body').append(`<h1 id="game-end-text">${winner} wins!</h1>`);
+      } else {
+        $('body').append('<h1 id="game-end-text">Tie! Nobody wins!</h1>');
+      }
+
+      this.showEnd(winner);
+      this.display.off('click');
+      return true;
+    }
+
+    return false;
   }
 
   showEnd(winner) {
@@ -51,9 +69,18 @@ class View {
       $square.text(this.game.currentPlayer);
       $square.addClass('occupied');
       this.game.swapTurn();
+      return true;
     } catch(err) {
       alert('That space is taken!');
+      return false;
     }
+  }
+
+  moveComputer() {
+    const pos = this.computerPlayer.makeMove(this.game.board);
+
+    this.makeMove($(`li[data-pos="${pos[0]} ${pos[1]}"]`));
+    this.gameOver();
   }
 
   setupBoard() {
