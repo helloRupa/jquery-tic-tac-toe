@@ -30,8 +30,12 @@ class ComputerPlayer {
 
     const empties = this.emptySpaces();
 
-    if (empties.length === 9) {
-      return this.randomSpace([[1, 1], [0, 0], [0, 2], [2, 0], [2, 2]]);
+    if (empties.length >= 8) {
+      if (this.board.isEmptyPos([1, 1])) {
+        return [1, 1];
+      }
+
+      return this.randomSpace([[0, 0], [0, 2], [2, 0], [2, 2]]);
     }
 
     empties.forEach((coords => {
